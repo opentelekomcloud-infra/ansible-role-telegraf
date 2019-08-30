@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: telegraf
   author: Artem Goncharov
   description: Provision Telegraf under Podman container
   company: OpenTelekomCloud
@@ -12,6 +13,6 @@ galaxy_info:
     versions:
     - all
 
-  galaxy_tags: [Telegraf, Podman]
+  galaxy_tags: [telegraf, podman]
 
 dependencies: []
