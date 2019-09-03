@@ -1,12 +1,19 @@
 ---
 # tasks file for roles/executor
+- name: Include Fedora variables
+  include_vars: fedora.yml
+  when: ansible_distribution == "Fedora"
 
-
-- name: Write telegraf systemd unit file
-  become: true
-  template:
-    dest: "{{ telegraf_systemd_unit_path }}"
-    src: telegraf-service.service
+  # - name: Install required packages
+  #   become: true
+  #   package:
+  #     state: present
+  #     name: "{{ item }}"
+  #   with_items: "{{ packages }}"
+  #   register: task_result
+  #   until: task_result is success
+  #   retries: 5
+  #   delay: 2
 
 - name: Make sure Telegraf Conf dir exists
   become: true
@@ -21,22 +28,17 @@
     content: "{{ item.content }}"
     dest: "{{ ( '/etc/telegraf/' + item.name ) }}"
     mode: "{{ item.mode }}"
+  when: item.content is defined
   loop:
     - {content: "{{ telegraf_ssl_cert_content }}",
        name: "{{ telegraf_ssl_cert_name }}",
        mode: "0644"}
-    - {content: "{{telegraf_ssl_key_content }}",
-       name: "{{telegraf_ssl_key_name }}",
+    - {content: "{{ telegraf_ssl_key_content }}",
+       name: "{{ telegraf_ssl_key_name }}",
        mode: "0600"}
     - {content: "{{ telegraf_ssl_ca_cert_content }}",
        name: "{{ telegraf_ssl_ca_cert_name }}",
        mode: "0644"}
-
-- name: Write Telegraf Conf
-  become: true
-  template:
-    src: "telegraf.conf"
-    dest: "/etc/telegraf/telegraf.conf"
 
 - name: Write Telegraf Env file
   become: true
@@ -44,10 +46,16 @@
     src: "env"
     dest: "/etc/telegraf/env"
 
-- name: Start telegraf
+- name: Write Telegraf Conf
   become: true
-  systemd:
-    name: "{{ telegraf_systemd_service_name }}"
-    enabled: true
-    state: "started"
-    daemon_reload: true
+  template:
+    src: "telegraf.conf"
+    dest: "/etc/telegraf/telegraf.conf"
+
+- name: Write telegraf systemd unit file
+  become: true
+  template:
+    dest: "{{ telegraf_systemd_unit_path }}"
+    src: telegraf-service.service
+  notify:
+    - restart telegraf
