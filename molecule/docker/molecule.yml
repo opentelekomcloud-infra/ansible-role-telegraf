@@ -11,6 +11,7 @@ platforms:
     privileged: true
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+        # - "/var/lib/containers:/var/lib/containers:z"
     command: "/usr/sbin/init"
     tty: True
     environment:
@@ -20,6 +21,7 @@ provisioner:
   lint:
     name: ansible-lint
   playbooks:
+    prepare: prepare.yml
     converge: ../playbook.yml
 verifier:
   name: testinfra
