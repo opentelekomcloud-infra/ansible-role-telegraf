@@ -4,7 +4,7 @@ telegraf_systemd_service_name: "telegraf-service.service"
 telegraf_systemd_unit_path: "{{ '/etc/systemd/system/' + telegraf_systemd_service_name }}"
 telegraf_image_tag: 1.11.0
 telegraf_tags: 
- - "hostname=fake"
+  hostname: fake
 
 telegraf_os_user: telegraf
 telegraf_os_group: telegraf
@@ -14,7 +14,8 @@ telegraf_output_influxdb_enable: false
 telegraf_output_influxdb_host: 127.0.0.1
 telegraf_output_influxdb_port: 8086
 
-telegraf_output_prometheus_enable: false
+# NOTE: at least one output must be enabled
+telegraf_output_prometheus_enable: true
 
 # influxdb_telegraf_db_name: some_db
 # influxdb_telegraf_user_name: fake_user
