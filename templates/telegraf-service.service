@@ -6,6 +6,8 @@ Wants=syslog.service
 Type=simple
 Restart=always
 TimeoutSec=30s
+User={{ telegraf_os_user }}
+Group={{ telegraf_os_group }}
 EnvironmentFile=/etc/telegraf/env
 
 ExecStartPre=-/usr/bin/podman rm "telegraf"
