@@ -10,6 +10,7 @@ User={{ telegraf_os_user }}
 Group={{ telegraf_os_group }}
 EnvironmentFile=/etc/telegraf/env
 
+ExecStartPre=-/usr/bin/podman system migrate
 ExecStartPre=-/usr/bin/podman rm "telegraf"
 
 ExecStart=/usr/bin/podman run \
