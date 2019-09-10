@@ -3,26 +3,30 @@
 telegraf_systemd_service_name: "telegraf-service.service"
 telegraf_systemd_unit_path: "{{ '/etc/systemd/system/' + telegraf_systemd_service_name }}"
 telegraf_image_tag: 1.11.0
-telegraf_tags: []
+telegraf_tags: 
+ - "hostname=fake"
 
-influxdb_public_ip: 127.0.0.1
-influxdb_port: 8086
+telegraf_os_user: telegraf
+telegraf_os_group: telegraf
 
-influxdb_telegraf_db_name: some_db
-influxdb_telegraf_user_name: fake_user
-influxdb_telegraf_user_password: fake_pass
-influxdb_ssl_validate_cert: true
 
-telegraf_ssl_cert_name: telegraf.crt
-telegraf_ssl_cert_content: |
-  fake_ssl_content
+telegraf_output_influxdb_enable: false
+telegraf_output_influxdb_host: 127.0.0.1
+telegraf_output_influxdb_port: 8086
 
-telegraf_ssl_key_name: telegraf.key.pem
-telegraf_ssl_key_content: |
-  fake_ssl_key_content
+telegraf_output_prometheus_enable: false
 
-telegraf_ssl_ca_cert_name: ca.crt
-telegraf_ssl_ca_cert_content: 
+# influxdb_telegraf_db_name: some_db
+# influxdb_telegraf_user_name: fake_user
+# influxdb_telegraf_user_password: fake_pass
+# influxdb_ssl_validate_cert: true
+#
 
+telegraf_input_statsd_enable: false
+
+telegraf_input_influxdb_enable: false
 telegraf_input_influxdb_user_name: foobar
 telegraf_input_influxdb_user_password: barfoo
+
+telegraf_input_cpu_enable: true
+telegraf_input_mem_enable: true

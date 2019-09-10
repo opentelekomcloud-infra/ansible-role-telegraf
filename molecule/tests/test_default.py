@@ -3,9 +3,19 @@ import pytest
 
 import testinfra.utils.ansible_runner
 
+
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']
 ).get_hosts('all')
+
+
+@pytest.fixture(scope='module')
+def telegraf_user(host):
+    ansible_vars = host.ansible.get_variables()
+    user = ansible_vars.get('telegraf_os_user', 'telegraf')
+    group = ansible_vars.get('telegraf_os_group', 'telegraf')
+
+    return {'user': user, 'group': group}
 
 
 @pytest.mark.parametrize('pkg', [
@@ -17,15 +27,31 @@ def test_telegraf_packages_installed(host, pkg):
     assert package.is_installed
 
 
-def test_telegraf_config(host):
-    for fname in ['/etc/telegraf', '/etc/telegraf/telegraf.conf',
+def test_telegraf_systemd_config(host):
+    data = host.file('/etc/systemd/system/telegraf-service.service')
+
+    assert data.exists
+    assert data.user == 'root'
+    assert data.group == 'root'
+
+
+def test_telegraf_user(host, telegraf_user):
+
+    user = host.user(telegraf_user['user'])
+
+    assert user.group == telegraf_user['group']
+
+
+def test_telegraf_config(host, telegraf_user):
+
+    for fname in ['/etc/telegraf',
                   '/etc/telegraf/env',
-                  '/etc/systemd/system/telegraf-service.service']:
+                  '/etc/telegraf/telegraf.conf']:
         data = host.file(fname)
 
         assert data.exists
-        assert data.user == 'root'
-        assert data.group == 'root'
+        assert data.user == telegraf_user['user']
+        assert data.group == telegraf_user['group']
 
 
 def test_telegraf_running(host):
@@ -33,16 +59,3 @@ def test_telegraf_running(host):
 
     assert service.is_running
     assert service.is_enabled
-
-
-def test_telegraf_ssl_certs(host):
-    data = {
-        '/etc/telegraf/telegraf.crt': {'mode': 0o644},
-        '/etc/telegraf/telegraf.key.pem': {'mode': 0o600}
-    }
-
-    for fname in data.keys():
-        cert_file = host.file(fname)
-
-        assert cert_file.exists
-        assert cert_file.mode == data[fname]['mode']

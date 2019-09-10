@@ -23,6 +23,11 @@ provisioner:
   playbooks:
     prepare: prepare.yml
     converge: ../playbook.yml
+  inventory:
+    group_vars:
+      all:
+        telegraf_os_user: root
+        telegraf_os_group: root
 verifier:
   name: testinfra
   directory: ../tests
