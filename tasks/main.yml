@@ -80,6 +80,6 @@
   become: true
   template:
     dest: "{{ telegraf_systemd_unit_path }}"
-    src: telegraf-service.service
+    src: telegraf.service
   notify:
     - restart telegraf
