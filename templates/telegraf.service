@@ -19,6 +19,7 @@ ExecStart=/usr/bin/podman run \
   -p 8125:8125 \
   -p 9273:9273 \
   -v /etc/telegraf:/etc/telegraf:ro \
+  -v /:/rootfs:ro -e HOST_MOUNT_PREFIX=/rootfs -e HOST_PROC=/rootfs/proc \
   ${TELEGRAF_IMAGE}
 
 ExecReload=-/usr/bin/podman stop "telegraf"
