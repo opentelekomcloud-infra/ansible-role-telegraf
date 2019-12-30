@@ -15,7 +15,6 @@
   retries: 5
   delay: 2
 
-
 - name: Create telegraf OS group
   become: true
   group:
@@ -36,33 +35,6 @@
     recurse: yes
     owner: "{{ telegraf_os_user }}"
     group: "{{ telegraf_os_group }}"
-
-    # - name: Write SSL Cert
-    #   become: true
-    #   copy:
-    #     content: "{{ item.content }}"
-    #     dest: "{{ ( '/etc/telegraf/' + item.name ) }}"
-    #   when: telegraf_enable_ssl and item.content is defined
-    #   loop:
-    #     - {content: "{{ telegraf_ssl_cert_content }}",
-    #        name: "{{ telegraf_ssl_cert_name }}"}
-    #     - {content: "{{ telegraf_ssl_key_content }}",
-    #        name: "{{ telegraf_ssl_key_name }}"}
-    # 
-    # 
-    # - name: Set ssl cert permission
-    #   become: true
-    #   file:
-    #     path: "{{ item.location }}"
-    #     owner: "{{ telegraf_os_user }}"
-    #     group: "{{ telegraf_os_group }}"
-    #     mode: "{{ item.mode }}"
-    #   when: telegraf_enable_ssl
-    #   loop:
-    #     - {location: "{{ telegraf_ssl_cert_location }}",
-    #        mode: '0644'}
-    #     - {location: "{{ telegraf_ssl_key_location }}",
-    #        mode: '0600'}
 
 - name: Write Telegraf Env file
   become: true
