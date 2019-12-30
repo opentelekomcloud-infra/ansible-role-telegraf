@@ -41,12 +41,16 @@
   template:
     src: "env"
     dest: "/etc/telegraf/env"
+  notify:
+    - restart telegraf
 
 - name: Write Telegraf Conf
   become: true
   template:
     src: "telegraf.conf"
     dest: "/etc/telegraf/telegraf.conf"
+  notify:
+    - restart telegraf
 
 - name: Write telegraf systemd unit file
   become: true
